@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<!-- ============================================================
+     Page:    About (about.html)
+     Site:    Student Portfolio & Academic Planner
+     Author:  Engr Seun (TeemTECH), Miva Open University
+     Purpose: Presents the author's educational background,
+              career aspirations, technical skills and hobbies.
+     ============================================================ -->
+<html lang="en"> <!-- lang helps screen readers and search engines -->
+
+<head>
+    <!-- Character encoding: must appear within the first 1024 bytes -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive layout: match the viewport to the device width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO: summary shown in search engine results -->
+    <meta name="description" content="Academic portfolio and student planner of Engr Seun (TeemTECH).">
+
+    <title>About | Engr Seun</title>
+
+    <!-- Performance: open the connection to Google Fonts early -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- Web fonts: Archivo (headings) and IBM Plex Sans (body text) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500&display=swap">
+
+    <!-- Main site stylesheet (shared by all pages) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Accessibility: lets keyboard users bypass the navigation -->
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- ===================== SITE HEADER ===================== -->
+    <header class="site-header">
+
+        <!-- Brand / logo link back to the home page -->
+        <a class="brand" href="index.html">Engr Seun<span>TeemTECH</span></a>
+
+        <!-- Mobile menu toggle; js/main.js updates aria-expanded on click -->
+        <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+
+        <!-- Primary navigation (aria-label distinguishes it for screen readers) -->
+        <nav aria-label="Main navigation">
+            <ul id="nav">
+                <li><a href="index.html">Home</a></li>
+                <!-- Current page: "active" styles the link, aria-current announces it.
+                     Only the current page should carry aria-current="page". -->
+                <li><a href="about.html" class="active" aria-current="page">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="planner.html">Planner</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main id="main"> <!-- Target of the "Skip to content" link -->
+
+        <!-- "narrow" class constrains the line length for easier reading -->
+        <section class="narrow">
+            <h1>About me</h1>
+
+            <!-- Lead paragraph: one-line summary of the author -->
+            <p class="lead">I am a civil engineer and software engineer in training, building a broad academic base before I specialise.</p>
+
+            <!-- ---------- Education history ---------- -->
+            <h2>Educational background</h2>
+
+            <!-- Data table: scope="col" lets screen readers link each cell to its column heading -->
+            <table>
+                <caption>My education so far</caption>
+
+                <!-- Column headings: each column now holds one kind of data -->
+                <thead>
+                    <tr>
+                        <th scope="col">Institution</th>
+                        <th scope="col">Level</th>
+                        <th scope="col">Focus</th>
+                        <th scope="col">Years</th>
+                    </tr>
+                </thead>
+
+                <!-- Education records, most recent first.
+                     &mdash; marks a cell with no data (screen readers announce it as a dash). -->
+                <tbody>
+                    <!-- University: science and computing courses -->
+                    <tr>
+                        <td>Miva Open University</td>
+                        <td>100 level</td>
+                        <td>Mathematics, physics, statistics, computing</td>
+                        <td>Ongoing</td>
+                    </tr>
+
+                    <!-- University: arts and information courses -->
+                    <tr>
+                        <td>Miva Open University</td>
+                        <td>100 level</td>
+                        <td>English and linguistics, library and information science, environmental studies</td>
+                        <td>Ongoing</td>
+                    </tr>
+
+                    <!-- Secondary school (S.S.C.E = Senior School Certificate Examination) -->
+                    <tr>
+                        <td>Ogunmodede Senior Secondary School, Epe, Lagos.</td>
+                        <td>S.S.C.E</td>
+                        <td>&mdash;</td>
+                        <td>2000 - 2006</td>
+                    </tr>
+
+                    <!-- Primary school (F.S.L.C = First School Leaving Certificate) -->
+                    <tr>
+                        <td>Zumratu Primary School, Epe, Lagos.</td>
+                        <td>F.S.L.C</td>
+                        <td>&mdash;</td>
+                        <td>1994 - 2000</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <!-- ---------- Career goals ---------- -->
+            <h2>Career aspirations</h2>
+            <p>I want to design safe, affordable structures and write the software that makes engineering work faster and more accurate. My goal is to work where civil engineering and software meet, such as structural analysis tools and construction management systems.</p>
+
+
+            <!-- ---------- Skills ---------- -->
+            <h2>Technical skills</h2>
+
+            <!-- Intentionally empty: js/about.js builds the skill items and inserts them here via the "skills" id -->
+            <ul class="skills" id="skills"></ul>
+
+
+            <!-- ---------- Hobbies ---------- -->
+            <h2>Hobbies and interests</h2>
+
+            <!-- "plain" class removes default bullet styling -->
+            <ul class="plain">
+                <li>Building small web tools</li>
+                <li>Studying mathematics and physics problems</li>
+                <li>Reading about construction and the environment</li>
+                <li>Organising information and learning how libraries classify it</li>
+            </ul>
+        </section>
+    </main>
+
+
+    <!-- ===================== SITE FOOTER ===================== -->
+    <footer class="site-footer">
+        <!-- Year is updated dynamically by js/main.js (2026 is the fallback) -->
+        <p>&copy; <span id="year">2026</span> Engr Seun (TeemTECH). Miva Open University.</p>
+
+        <!-- TODO: replace YOUR-USERNAME/YOUR-REPO with your real GitHub repository path -->
+        <p><a href="https://github.com/YOUR-USERNAME/YOUR-REPO">GitHub repository</a></p>
+    </footer>
+
+    <!-- Site-wide JavaScript (mobile menu toggle, footer year) -->
+    <script src="js/main.js"></script>
+
+    <!-- Page-specific JavaScript: populates the skills list; loaded after main.js -->
+    <script src="js/about.js"></script>
+</body>
+</html>

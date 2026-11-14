@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<!-- ============================================================
+     Page:    Home (index.html)
+     Site:    Student Portfolio & Academic Planner
+     Author:  Engr Seun (TeemTECH), Miva Open University
+     Purpose: Landing page introducing the author, featured
+              projects, and an audio introduction.
+     ============================================================ -->
+<html lang="en"> <!-- lang helps screen readers and search engines -->
+
+<head>
+    <!-- Character encoding: must appear within the first 1024 bytes -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive layout: match the viewport to the device width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO: summary shown in search engine results -->
+    <meta name="description" content="Academic portfolio and student planner of Engr Seun (TeemTECH).">
+
+    <title>Home | Engr Seun</title>
+
+    <!-- Performance: open the connection to Google Fonts early -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- Web fonts: Archivo (headings) and IBM Plex Sans (body text) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500&display=swap">
+
+    <!-- Main site stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<body>
+    <!-- Accessibility: lets keyboard users bypass the navigation -->
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- ===================== SITE HEADER ===================== -->
+    <header class="site-header">
+
+        <!-- Brand / logo link back to the home page -->
+        <a class="brand" href="index.html">Engr Seun<span>TeemTECH</span></a>
+
+        <!-- Mobile menu toggle; js/main.js updates aria-expanded on click -->
+        <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+
+        <!-- Primary navigation (aria-label distinguishes it for screen readers) -->
+        <nav aria-label="Main navigation">
+            <ul id="nav">
+                <!-- "active" class styles the current page; aria-current announces it.
+                     Only the current page should carry aria-current="page". -->
+                <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="planner.html">Planner</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main id="main"> <!-- Target of the "Skip to content" link -->
+
+        <!-- ---------- Hero: introduction and call-to-action ---------- -->
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Hello, I'm Engr Seun.</h1>
+
+                <!-- Decorative tagline; hidden from assistive technology -->
+                <div class="dimline" aria-hidden="true">
+                    <span>Civil engineer &middot; Software engineer</span>
+                </div>
+
+                <!-- Lead paragraph: personal background -->
+                <p class="lead">Welcome to my academic portfolio. Hi, I'm Engr Seun, a civil engineer by day and a software engineering student at Miva Open University by night. I spend my days designing and overseeing real structures, and my evenings learning to build digital ones. This mix gives me a practical, detail-driven approach to software: I plan carefully, test thoroughly, and build things that hold up in real-world use.</p>
+
+                <!-- Areas of interest and openness to collaboration -->
+                <p>I'm especially interested in tech solutions for the construction industry, such as platforms that connect people with trusted skilled workers. I'm open to collaborations, internships, and projects where engineering and code meet.</p>
+
+                <!-- Call-to-action buttons; "ghost" is the secondary style -->
+                <p class="actions">
+                    <a class="btn" href="projects.html">See my projects</a>
+                    <a class="btn ghost" href="contact.html">Contact me</a>
+                </p>
+            </div>
+
+            <!-- Portrait with caption; width/height prevent layout shift while loading -->
+            <figure class="portrait">
+                <img src="images/bio.jpeg" alt="Portrait of Engr Seun" width="360" height="420">
+                <figcaption>Engr. Kalejaye Oluwasuen Temitope</figcaption>
+            </figure>
+        </section>
+
+
+        <!-- ---------- Overview: cards linking to key pages ---------- -->
+        <section class="band">
+            <h2>What you will find here</h2>
+            <ul class="cards">
+
+                <!-- Card 1: About page -->
+                <li>
+                    <h3><a href="about.html">About me</a></h3>
+                    <p>I'm Engr Seun (TeemTECH), a civil and software engineering student at Miva Open University. I use code to solve engineering problems.</p>
+                </li>
+
+                <!-- Card 2: Projects page.
+                     The <p> is closed before the nested <ul>, because a list
+                     cannot be a child of a paragraph in valid HTML. -->
+                <li>
+                    <h3><a href="projects.html">Projects</a></h3>
+                    <p>Three things I have designed and built.</p>
+                    <ul>
+                        <li>Sitelink+ Project</li>
+                       
+                        <li>Plan Quantifier Project</li>
+						
+						<li>Sitemanager Project</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+
+        <!-- ---------- Audio introduction ---------- -->
+        <section class="band alt"> <!-- "alt" applies the alternate background -->
+            <h2>Listen: a short introduction</h2>
+
+            <!-- preload="none": the file downloads only when the user presses play -->
+            <audio controls preload="none">
+                <!-- audio/mpeg is the correct MIME type for .mp3 files -->
+                <source src="media/introduction.mp3" type="audio/mpeg">
+                <!-- Fallback text for browsers without <audio> support -->
+                Your browser does not support audio playback.
+            </audio>
+        </section>
+    </main>
+
+
+    <!-- ===================== SITE FOOTER ===================== -->
+    <footer class="site-footer">
+        <!-- Year is updated dynamically by js/main.js (2026 is the fallback) -->
+        <p>&copy; <span id="year">2026</span> Engr Seun (TeemTECH). Miva Open University.</p>
+
+        <!-- TODO: replace YOUR-USERNAME/YOUR-REPO with your real GitHub repository path -->
+        <p><a href="https://github.com/YOUR-USERNAME/YOUR-REPO">GitHub repository</a></p>
+    </footer>
+
+    <!-- Site-wide JavaScript (mobile menu toggle, footer year); loaded last so the DOM is ready -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>

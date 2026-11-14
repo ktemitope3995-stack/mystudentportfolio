@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SiteLink connects you with verified construction workers and tracks each job from booking to review.">
+<title>Post a job | SiteLink</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="index.html">SiteLink</a>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+  <nav aria-label="Main navigation"><ul id="nav"><li><a href="index.html">Home</a></li><li><a href="workers.html">Find workers</a></li><li><a href="hire.html" class="active" aria-current="page">Post a job</a></li><li><a href="jobs.html">My jobs</a></li><li><a href="reviews.html">Reviews</a></li></ul></nav>
+</header>
+<main id="main">
+
+<section class="wrap narrow">
+  <h1>Post a job</h1>
+  <p class="lead">Describe the work. Your task list becomes the checklist the worker follows.</p>
+  <form id="jobForm" novalidate>
+    <div class="field"><label for="client">Your name</label><input type="text" id="client"><span class="err" id="clientErr"></span></div>
+    <div class="field"><label for="phone">Phone number</label><input type="text" id="phone" inputmode="numeric"><span class="err" id="phoneErr"></span></div>
+    <div class="row">
+      <div class="field"><label for="trade">Trade needed</label><select id="trade"><option value="">Choose a trade</option></select><span class="err" id="tradeErr"></span></div>
+      <div class="field"><label for="worker">Worker</label><select id="worker"><option value="">Choose a trade first</option></select><span class="err" id="workerErr"></span></div>
+    </div>
+    <div class="field"><label for="address">Site address</label><input type="text" id="address"><span class="err" id="addressErr"></span></div>
+    <div class="row">
+      <div class="field"><label for="date">Date</label><input type="date" id="date"><span class="err" id="dateErr"></span></div>
+      <div class="field"><label for="time">Start time</label><input type="time" id="time" value="08:00"><span class="err" id="timeErr"></span></div>
+    </div>
+    <div class="field"><label for="pay">Agreed pay (naira)</label><input type="text" id="pay" inputmode="numeric"><span class="err" id="payErr"></span></div>
+    <div class="field"><label for="tasks">Tasks, one per line</label><textarea id="tasks" rows="5" placeholder="Mark socket positions&#10;Run conduit and cables&#10;Test every circuit"></textarea><span class="err" id="tasksErr"></span></div>
+    <button class="btn" type="submit">Book worker</button>
+  </form>
+</section>
+</main>
+<footer class="site-footer"><p>SiteLink: a web design project, Miva Open University.</p><p>Demo data is stored in your browser only.</p></footer>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/hire.js"></script>
+</body>
+</html>

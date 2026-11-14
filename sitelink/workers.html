@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SiteLink connects you with verified construction workers and tracks each job from booking to review.">
+<title>Find workers | SiteLink</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="index.html">SiteLink</a>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+  <nav aria-label="Main navigation"><ul id="nav"><li><a href="index.html">Home</a></li><li><a href="workers.html" class="active" aria-current="page">Find workers</a></li><li><a href="hire.html">Post a job</a></li><li><a href="jobs.html">My jobs</a></li><li><a href="reviews.html">Reviews</a></li></ul></nav>
+</header>
+<main id="main">
+
+<section class="wrap">
+  <h1>Find a worker</h1>
+  <form id="filters" class="filters" aria-label="Filter workers">
+    <div><label for="fTrade">Trade</label><select id="fTrade"><option value="">All trades</option></select></div>
+    <div><label for="fArea">Area</label><input type="text" id="fArea" placeholder="e.g. Ikeja"></div>
+    <div><label for="fRating">Minimum rating</label><select id="fRating"><option value="0">Any</option><option value="4">4.0 and above</option><option value="4.5">4.5 and above</option></select></div>
+    <div><label for="fSort">Sort by</label><select id="fSort"><option value="score">Reliability score</option><option value="rating">Rating</option><option value="rate">Lowest daily rate</option></select></div>
+    <label class="check"><input type="checkbox" id="fAvail"> Available now</label>
+  </form>
+  <p id="count" class="summary" aria-live="polite"></p>
+  <ul id="workerGrid" class="grid"></ul>
+</section>
+</main>
+<footer class="site-footer"><p>SiteLink: a web design project, Miva Open University.</p><p>Demo data is stored in your browser only.</p></footer>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/workers.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Page:    Contact (contact.html)
+     Site:    Student Portfolio & Academic Planner
+     Author:  Engr Seun (TeemTECH), Miva Open University
+     Purpose: Contact form with client-side validation (handled by
+              js/contact.js) and an embedded introduction video.
+     ============================================================ -->
+<html lang="en"> <!-- lang helps screen readers and search engines -->
+
+<head>
+    <!-- Character encoding: must appear within the first 1024 bytes -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive layout: match the viewport to the device width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO: summary shown in search engine results -->
+    <meta name="description" content="Academic portfolio and student planner of Engr Seun (TeemTECH).">
+
+    <title>Contact | Engr Seun</title>
+
+    <!-- Performance: open the connection to Google Fonts early -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- Web fonts: Archivo (headings) and IBM Plex Sans (body text) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500&display=swap">
+
+    <!-- Main site stylesheet (shared by all pages) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Accessibility: lets keyboard users bypass the navigation -->
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- ===================== SITE HEADER ===================== -->
+    <header class="site-header">
+
+        <!-- Brand / logo link back to the home page -->
+        <a class="brand" href="index.html">Engr Seun<span>TeemTECH</span></a>
+
+        <!-- Mobile menu toggle; js/main.js updates aria-expanded on click -->
+        <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+
+        <!-- Primary navigation (aria-label distinguishes it for screen readers) -->
+        <nav aria-label="Main navigation">
+            <ul id="nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="planner.html">Planner</a></li>
+                <!-- Current page: "active" styles the link, aria-current announces it.
+                     Only the current page should carry aria-current="page". -->
+                <li><a href="contact.html" class="active" aria-current="page">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main id="main"> <!-- Target of the "Skip to content" link -->
+
+        <!-- "narrow" class constrains the line length for easier reading -->
+        <section class="narrow">
+            <h1>Contact me</h1>
+
+            <!-- Lead paragraph: invites the visitor to get in touch -->
+            <p class="lead">Send me a message and I will reply as soon as I can.</p>
+
+            <!-- ---------- Contact form ----------
+                 novalidate turns off the browser's built-in validation pop-ups,
+                 so contact.js can show its own error messages in the .err spans.
+                 No action attribute: the form is handled in the browser.
+                 IDs below must match the ones used in js/contact.js exactly. -->
+            <form id="contactForm" novalidate>
+
+                <!-- Name field -->
+                <div class="field">
+                    <label for="name">Name</label>
+                    <!-- autocomplete lets browsers fill in the visitor's saved details -->
+                    <input type="text" id="name" name="name" autocomplete="name">
+                    <!-- Validation error for this field, filled in by contact.js -->
+                    <span class="err" id="nameErr"></span>
+                </div>
+
+                <!-- Email field -->
+                <div class="field">
+                    <label for="email">Email address</label>
+                    <!-- type="email" shows an email keyboard on phones; the format
+                         is still checked by contact.js because of novalidate -->
+                    <input type="email" id="email" name="email" autocomplete="email">
+                    <span class="err" id="emailErr"></span>
+                </div>
+
+                <!-- Phone field -->
+                <div class="field">
+                    <label for="phone">Phone number</label>
+                    <!-- type="tel" with inputmode="numeric" shows a number keypad on phones.
+                         The keypad is only a convenience: contact.js is what rejects
+                         anything that is not a digit (spaces, dashes, + sign). -->
+                    <input type="tel" id="phone" name="phone" inputmode="numeric" autocomplete="tel">
+                    <span class="err" id="phoneErr"></span>
+                </div>
+
+                <!-- Message field -->
+                <div class="field">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5"></textarea>
+                    <span class="err" id="messageErr"></span>
+                </div>
+
+                <!-- type="submit" triggers the form's submit event (also fires on Enter) -->
+                <button class="btn" type="submit">Send message</button>
+
+                <!-- Success message shown by contact.js after a valid submission.
+                     role="status" makes screen readers announce it politely. -->
+                <p id="formStatus" class="msg ok" role="status"></p>
+            </form>
+
+
+            <!-- ---------- Introduction video ---------- -->
+            <h2>Watch: A quick intro video</h2>
+
+            <!-- preload="none": the video downloads only when the user presses play;
+                 poster is the placeholder image shown before playback.
+                 max-width: 100% lets the video shrink on narrow screens instead of
+                 overflowing; height: auto keeps the correct aspect ratio. -->
+            <video controls preload="none" width="640" poster="images/p1.svg" style="max-width: 100%; height: auto;">
+                <source src="media/intro_vid.mp4" type="video/mp4">
+
+                <!-- Captions for deaf and hard-of-hearing visitors; the .vtt file
+                     must exist in the media folder -->
+                <track kind="captions" src="media/intro_vid.vtt" srclang="en" label="English" default>
+
+                <!-- Fallback text for browsers without <video> support -->
+                Your browser does not support video playback.
+            </video>
+        </section>
+    </main>
+
+
+    <!-- ===================== SITE FOOTER ===================== -->
+    <footer class="site-footer">
+        <!-- Year is updated dynamically by js/main.js (2026 is the fallback) -->
+        <p>&copy; <span id="year">2026</span> Engr Seun (TeemTECH). Miva Open University.</p>
+
+        <!-- TODO: replace YOUR-USERNAME/YOUR-REPO with your real GitHub repository path -->
+        <p><a href="https://github.com/YOUR-USERNAME/YOUR-REPO">GitHub repository</a></p>
+    </footer>
+
+    <!-- Site-wide JavaScript (mobile menu toggle, footer year) -->
+    <script src="js/main.js"></script>
+
+    <!-- Page-specific JavaScript: form validation; loaded after main.js -->
+    <script src="js/contact.js"></script>
+</body>
+</html>

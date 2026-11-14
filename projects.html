@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<!-- ============================================================
+     Page:    Projects (projects.html)
+     Site:    Student Portfolio & Academic Planner
+     Author:  Engr Seun (TeemTECH), Miva Open University
+     Purpose: Showcases the author's featured projects, each with
+              a screenshot, description and link.
+     ============================================================ -->
+<html lang="en"> <!-- lang helps screen readers and search engines -->
+
+<head>
+    <!-- Character encoding: must appear within the first 1024 bytes -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive layout: match the viewport to the device width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO: summary shown in search engine results -->
+    <meta name="description" content="Academic portfolio and student planner of Engr Seun (TeemTECH).">
+
+    <title>Projects | Engr Seun</title>
+
+    <!-- Performance: open the connection to Google Fonts early -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- Web fonts: Archivo (headings) and IBM Plex Sans (body text) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500&display=swap">
+
+    <!-- Main site stylesheet (shared by all pages) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Accessibility: lets keyboard users bypass the navigation -->
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- ===================== SITE HEADER ===================== -->
+    <header class="site-header">
+
+        <!-- Brand / logo link back to the home page -->
+        <a class="brand" href="index.html">Engr Seun<span>TeemTECH</span></a>
+
+        <!-- Mobile menu toggle; js/main.js updates aria-expanded on click -->
+        <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+
+        <!-- Primary navigation (aria-label distinguishes it for screen readers) -->
+        <nav aria-label="Main navigation">
+            <ul id="nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <!-- Current page: "active" styles the link, aria-current announces it.
+                     Only the current page should carry aria-current="page". -->
+                <li><a href="projects.html" class="active" aria-current="page">Projects</a></li>
+                <li><a href="planner.html">Planner</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main id="main"> <!-- Target of the "Skip to content" link -->
+
+        <!-- "narrow wide": base reading width, widened to fit the image-plus-text project layout -->
+        <section class="narrow wide">
+            <h1>Projects</h1>
+
+            <!-- Lead paragraph: one-line summary. The count must match the number of
+                 <article> elements below and the project list on the home page. -->
+            <p class="lead">Two projects that combine my engineering and software interests.</p>
+
+            <!-- ---------- Project 1: Sitelink+ ---------- -->
+            <article class="project">
+                <!-- loading="lazy" defers the image until it nears the viewport;
+                     width/height reserve space and prevent layout shift.
+                     Alt text names the project exactly as titled below. -->
+                <img src="images/sitelink.jpg" alt="Screenshot of Sitelink+" width="480" height="300" loading="lazy">
+
+                <!-- Text column: title, description, tech stack and link -->
+                <div>
+                    <h2>Sitelink+</h2>
+                    <p>Find verified carpenters, electricians, masons, plumbers and more. SiteLink records who turned up, what was done, and how well it was done. Hire construction workers you can trust.</p>
+                    <!-- "tech" class styles the technology stack line (same format on every project) -->
+                    <p class="tech">Built with: HTML, CSS, JavaScript</p>
+                    <p><a class="btn small" href="sitelink/index.html">Find a Worker</a></p>
+                </div>
+            </article>
+
+            <!-- ---------- Project 2: Plan Quantifier ---------- -->
+            <article class="project">
+                <img src="images/planq.jpg" alt="Screenshot of Building Plan Quantifier" width="480" height="300" loading="lazy">
+
+                <div>
+                    <h2>Plan Quantifier</h2>
+                    <p>Upload a floor plan image. Claude reads the rooms, walls, doors and windows, then the app works out the materials. Check every number before you order anything.</p>
+                    <p class="tech">Built with: HTML, JavaScript</p>
+                    <p><a class="btn small" href="plan-quantifier.html">View demo</a></p>
+                </div>
+            </article>
+			
+			<!-- ---------- Project 3: Site manager ---------- -->
+			 <article class="project">
+                <img src="images/sitemanager.jpg" alt="Screenshot of Sitemanager web app" width="480" height="300" loading="lazy">
+
+                <div>
+                    <h2>Site Manager</h2>
+                    <p>Projects, tasks, materials and workforce in one place.</p>
+                    <p class="tech">Built with: HTML, JavaScript</p>
+                    <p><a class="btn small" href="construction-manager.html">View demo</a></p>
+                </div>
+            </article>
+        </section>
+    </main>
+
+
+    <!-- ===================== SITE FOOTER ===================== -->
+    <footer class="site-footer">
+        <!-- Year is updated dynamically by js/main.js (2026 is the fallback) -->
+        <p>&copy; <span id="year">2026</span> Engr Seun (TeemTECH). Miva Open University.</p>
+
+        <!-- TODO: replace YOUR-USERNAME/YOUR-REPO with your real GitHub repository path -->
+        <p><a href="https://github.com/YOUR-USERNAME/YOUR-REPO">GitHub repository</a></p>
+    </footer>
+
+    <!-- Site-wide JavaScript (mobile menu toggle, footer year) -->
+    <script src="js/main.js"></script>
+</body>
+</html>

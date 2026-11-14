@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plan Quantifier</title>
+<style>
+:root{--ink:#16231F;--bg:#F7F7F2;--card:#fff;--line:#D5D9D3;--green:#1F7A5A;--amber:#FFB400;--muted:#5A6862;--danger:#B3261E;--btn:#16231F;--btnt:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#EDF1EE;--bg:#101815;--card:#18231F;--line:#2E3D37;--green:#4CC39A;--muted:#9DB0A7;--danger:#FF8A80;--btn:#FFB400;--btnt:#16231F;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#EDF1EE;--bg:#101815;--card:#18231F;--line:#2E3D37;--green:#4CC39A;--muted:#9DB0A7;--danger:#FF8A80;--btn:#FFB400;--btnt:#16231F;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:0 auto;padding:1.5rem 1rem 3rem}
+h1{font-size:clamp(1.7rem,5vw,2.4rem);margin:0 0 .3rem;line-height:1.15}h2{font-size:1.2rem;margin:2rem 0 .6rem}
+.lead{color:var(--muted);max-width:62ch;margin:0 0 1.2rem}
+.card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--amber);padding:1rem;margin-bottom:1rem}
+.drop{display:grid;place-items:center;text-align:center;border:2px dashed var(--muted);padding:1.6rem 1rem;cursor:pointer;transition:background .2s,border-color .2s}
+.drop:hover,.drop.over{background:rgba(255,180,0,.12);border-color:var(--amber)}
+.drop img{max-width:100%;max-height:340px;margin-top:.8rem}
+button,.btn{font:inherit;font-weight:600;background:var(--btn);color:var(--btnt);border:2px solid var(--btn);padding:.6rem 1.1rem;cursor:pointer;transition:transform .15s,opacity .15s}
+button:hover:not(:disabled){transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}button.sm{padding:.25rem .6rem;font-size:.85rem}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+label{font-weight:600;font-size:.9rem;display:block}
+input,textarea{font:inherit;width:100%;padding:.45rem .55rem;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.8rem}
+.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:420px}
+th,td{padding:.45rem .5rem;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}th{font-size:.85rem;color:var(--muted)}
+td input{min-width:60px}.qty{font-weight:700;font-variant-numeric:tabular-nums}
+.status{min-height:1.5em;font-weight:600}.err{color:var(--danger)}.ok{color:var(--green)}
+.tag{display:inline-block;padding:.1rem .6rem;background:var(--amber);color:#16231F;font-weight:700;font-size:.85rem}
+ul.notes{margin:.4rem 0 0;padding-left:1.2rem;color:var(--muted)}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:.8rem}
+.note{font-size:.88rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>Plan Quantifier</h1>
+<p class="lead">Upload a floor plan image. Claude reads the rooms, walls, doors and windows, then the app works out the materials. Check every number before you order anything.</p>
+
+<section class="card">
+  <label id="dropLabel" class="drop" for="file" tabindex="0">
+    <strong>Choose a plan image or drop it here</strong>
+    <span class="note">JPG or PNG. For a PDF, export or screenshot the plan page first.</span>
+    <img id="preview" alt="" hidden>
+  </label>
+  <input type="file" id="file" accept="image/png,image/jpeg,image/webp" hidden>
+  <div class="grid" style="margin-top:1rem">
+    <div><label for="hNote">Notes for the reader</label><input id="hNote" placeholder="e.g. scale 1:100, two storeys"></div>
+  </div>
+  <div class="row"><button id="go" disabled>Quantify this plan</button><span id="status" class="status" role="status" aria-live="polite"></span></div>
+</section>
+
+<h2>1. What was read from the plan <span id="conf" class="tag" hidden></span></h2>
+<p class="note">Correct anything that looks wrong. All quantities update as you type. You can also enter a plan by hand.</p>
+<section class="card">
+  <div class="scroll"><table><caption class="note" style="text-align:left">Rooms (metres)</caption>
+    <thead><tr><th>Room</th><th>Length</th><th>Width</th><th>Area m²</th><th></th></tr></thead><tbody id="rooms"></tbody></table></div>
+  <div class="row"><button class="ghost sm" id="addRoom">Add room</button></div>
+  <div class="grid" style="margin-top:1rem">
+    <div><label for="ext">External wall length (m)</label><input id="ext" inputmode="decimal"></div>
+    <div><label for="int">Internal wall length (m)</label><input id="int" inputmode="decimal"></div>
+    <div><label for="storeys">Storeys</label><input id="storeys" inputmode="numeric"></div>
+  </div>
+  <div class="scroll" style="margin-top:1rem"><table><caption class="note" style="text-align:left">Doors and windows (metres)</caption>
+    <thead><tr><th>Type</th><th>Label</th><th>Width</th><th>Height</th><th>Count</th><th></th></tr></thead><tbody id="open"></tbody></table></div>
+  <div class="row"><button class="ghost sm" id="addDoor">Add door</button><button class="ghost sm" id="addWin">Add window</button></div>
+  <ul class="notes" id="assump"></ul>
+</section>
+
+<h2>2. Assumptions you can change</h2>
+<section class="card"><div class="grid">
+  <div><label for="aH">Wall height (m)</label><input id="aH" inputmode="decimal" value="3"></div>
+  <div><label for="aW">Block waste (%)</label><input id="aW" inputmode="decimal" value="5"></div>
+  <div><label for="aS">Slab thickness (m)</label><input id="aS" inputmode="decimal" value="0.15"></div>
+  <div><label for="aFW">Footing width (m)</label><input id="aFW" inputmode="decimal" value="0.6"></div>
+  <div><label for="aFD">Footing depth (m)</label><input id="aFD" inputmode="decimal" value="0.45"></div>
+  <div><label for="aR">Roof slope factor</label><input id="aR" inputmode="decimal" value="1.3"></div>
+  <div><label for="aRb">Rebar (kg per m³ of concrete)</label><input id="aRb" inputmode="decimal" value="90"></div>
+</div></section>
+
+<h2>3. Unit prices in naira (optional)</h2>
+<p class="note">Enter the prices you are quoted. Only items with a price get a cost.</p>
+<section class="card"><div class="grid" id="prices"></div></section>
+
+<h2>4. Quantities and cost</h2>
+<section class="card">
+  <div class="scroll"><table><thead><tr><th>Item</th><th>Unit</th><th>Quantity</th><th>How it is worked out</th><th>Cost</th></tr></thead><tbody id="out"></tbody></table></div>
+  <div class="row"><button id="csv">Download as CSV</button><span id="csvMsg" class="status" role="status"></span></div>
+  <p class="note">Rules of thumb: 12.5 blocks per m² of wall (450 × 225 mm), 1 litre of paint covers 10 m² per coat (2 coats), 1:2:4 concrete needs about 6.4 bags of cement per m³. Steel is estimated from the kg per m³ you set (roughly 80 to 120 for slabs and footings). It is not a bar bending schedule. This is a quick estimate, not a full bill of quantities.</p>
+</section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const S = { rooms: [], ext: 0, int: 0, storeys: 1, doors: [], windows: [] };
+let imgBlob = null, sample = null, canImages = false;
+const num = v => { const n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; };
+const naira = n => "₦" + Math.round(n).toLocaleString();
+const PRICES = [["Sandcrete blocks", "per block"], ["Cement for slab (1:2:4)", "per bag"], ["Reinforcement steel", "per kg"], ["Plastering, both faces", "per m²"], ["Paint", "per litre"], ["Floor finish (tiles or screed)", "per m²"], ["Roof covering", "per m²"], ["Doors", "each"], ["Windows", "each"]];
+
+/* ---------- Claude (sample capability) ---------- */
+(async () => {
+  try {
+    sample = await claude.use("sample");
+    if (sample) { const lim = await sample.limits().catch(() => null); canImages = !!(lim && lim.images); }
+  } catch (e) { sample = null; }
+  if (!canImages) $("status").textContent = "Automatic reading is not available here. Enter the plan by hand below.";
+  refreshGo();
+})();
+const refreshGo = () => { $("go").disabled = !(imgBlob && canImages); };
+
+/* ---------- Upload and resize ---------- */
+function loadFile(f) {
+  if (!f || !/^image\//.test(f.type)) { $("status").textContent = "Choose an image file (JPG or PNG)."; $("status").className = "status err"; return; }
+  const url = URL.createObjectURL(f), img = new Image();
+  img.onload = () => {
+    const k = Math.min(1, 1800 / Math.max(img.width, img.height));
+    const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    c.toBlob(b => { imgBlob = b; refreshGo(); }, "image/jpeg", 0.88);
+    $("preview").src = url; $("preview").hidden = false; $("preview").alt = "Uploaded building plan";
+    $("status").textContent = canImages ? "Ready. Press Quantify this plan." : $("status").textContent; $("status").className = "status";
+  };
+  img.src = url;
+}
+$("file").addEventListener("change", e => loadFile(e.target.files[0]));
+const dz = $("dropLabel");
+dz.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } });
+["dragover", "dragenter"].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.add("over"); }));
+["dragleave", "drop"].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.remove("over"); }));
+dz.addEventListener("drop", e => loadFile(e.dataTransfer.files[0]));
+
+/* ---------- Ask Claude to read the plan ---------- */
+$("go").addEventListener("click", async () => {
+  const st = $("status"); st.className = "status"; st.textContent = "Reading the plan. This can take up to a minute…"; $("go").disabled = true;
+  const prompt = `You are a quantity surveyor's assistant. Read the attached building floor plan. Reply with ONLY JSON in this shape:
+{"storeys":1,"rooms":[{"name":"","length_m":0,"width_m":0}],"external_wall_length_m":0,"internal_wall_length_m":0,"doors":[{"label":"","width_m":0.9,"height_m":2.1,"count":1}],"windows":[{"label":"","width_m":1.2,"height_m":1.2,"count":1}],"confidence":"low|medium|high","assumptions":["..."]}
+Use dimensions written on the plan. If none are written, use the scale bar or standard sizes and say so in assumptions. List every room, group doors and windows by size, and measure wall lengths as centre-line totals. Notes from the user: ${$("hNote").value || "none"}`;
+  try {
+    const d = await sample.json(prompt, { images: [imgBlob], modelTier: "complex" });
+    S.rooms = (d.rooms || []).map(r => ({ name: String(r.name || "Room"), l: num(r.length_m), w: num(r.width_m) }));
+    S.ext = num(d.external_wall_length_m); S.int = num(d.internal_wall_length_m); S.storeys = Math.max(1, Math.round(num(d.storeys)) || 1);
+    S.doors = (d.doors || []).map(o => ({ label: String(o.label || "Door"), w: num(o.width_m), h: num(o.height_m), n: Math.round(num(o.count)) || 1 }));
+    S.windows = (d.windows || []).map(o => ({ label: String(o.label || "Window"), w: num(o.width_m), h: num(o.height_m), n: Math.round(num(o.count)) || 1 }));
+    $("conf").textContent = "Confidence: " + (d.confidence || "unknown"); $("conf").hidden = false;
+    $("assump").innerHTML = (d.assumptions || []).map(a => "<li>" + String(a).replace(/</g, "&lt;") + "</li>").join("");
+    buildInputs(); calc(); st.className = "status ok"; st.textContent = "Done. Check the numbers below.";
+    $("rooms").scrollIntoView({ behavior: "smooth", block: "center" });
+  } catch (e) {
+    st.className = "status err";
+    st.textContent = e && e.code === "not_granted" ? "Permission to use Claude was declined." : e && e.code === "rate_limited" ? "Too many requests. Wait a moment and try again." : "Could not read the plan. Try a clearer image, or enter it by hand.";
+  }
+  refreshGo();
+});
+
+/* ---------- Editable inputs ---------- */
+const cell = (v, cb, mode) => { const i = document.createElement("input"); i.value = v || ""; if (mode) i.inputMode = mode; i.addEventListener("input", () => { cb(i.value); calc(); }); const td = document.createElement("td"); td.appendChild(i); return td; };
+const delBtn = cb => { const td = document.createElement("td"), b = document.createElement("button"); b.className = "ghost sm"; b.textContent = "Remove"; b.addEventListener("click", () => { cb(); buildInputs(); calc(); }); td.appendChild(b); return td; };
+function buildInputs() {
+  $("rooms").innerHTML = "";
+  S.rooms.forEach((r, i) => {
+    const tr = document.createElement("tr"), area = document.createElement("td"); area.className = "qty"; area.textContent = (r.l * r.w).toFixed(1);
+    tr.append(cell(r.name, v => r.name = v), cell(r.l, v => { r.l = num(v); area.textContent = (r.l * r.w).toFixed(1); }, "decimal"), cell(r.w, v => { r.w = num(v); area.textContent = (r.l * r.w).toFixed(1); }, "decimal"), area, delBtn(() => S.rooms.splice(i, 1)));
+    $("rooms").appendChild(tr);
+  });
+  $("ext").value = S.ext || ""; $("int").value = S.int || ""; $("storeys").value = S.storeys;
+  $("open").innerHTML = "";
+  [["Door", S.doors], ["Window", S.windows]].forEach(([t, arr]) => arr.forEach((o, i) => {
+    const tr = document.createElement("tr"), k = document.createElement("td"); k.textContent = t;
+    tr.append(k, cell(o.label, v => o.label = v), cell(o.w, v => o.w = num(v), "decimal"), cell(o.h, v => o.h = num(v), "decimal"), cell(o.n, v => o.n = Math.round(num(v)), "numeric"), delBtn(() => arr.splice(i, 1)));
+    $("open").appendChild(tr);
+  }));
+}
+$("addRoom").addEventListener("click", () => { S.rooms.push({ name: "Room", l: 0, w: 0 }); buildInputs(); });
+$("addDoor").addEventListener("click", () => { S.doors.push({ label: "Door", w: 0.9, h: 2.1, n: 1 }); buildInputs(); calc(); });
+$("addWin").addEventListener("click", () => { S.windows.push({ label: "Window", w: 1.2, h: 1.2, n: 1 }); buildInputs(); calc(); });
+$("ext").addEventListener("input", e => { S.ext = num(e.target.value); calc(); });
+$("int").addEventListener("input", e => { S.int = num(e.target.value); calc(); });
+$("storeys").addEventListener("input", e => { S.storeys = Math.max(1, Math.round(num(e.target.value)) || 1); calc(); });
+["aH", "aW", "aS", "aFW", "aFD", "aR", "aRb"].forEach(id => $(id).addEventListener("input", calc));
+
+/* ---------- Quantities ---------- */
+let rows = [];
+function calc() {
+  const h = num($("aH").value), waste = num($("aW").value), slabT = num($("aS").value), fw = num($("aFW").value), fd = num($("aFD").value), rf = num($("aR").value);
+  const floor = S.rooms.reduce((s, r) => s + r.l * r.w, 0), foot = floor / S.storeys;
+  const open = [...S.doors, ...S.windows].reduce((s, o) => s + o.w * o.h * o.n, 0);
+  const gross = (S.ext + S.int) * h, net = Math.max(0, gross - open);
+  const blocks = net * 12.5 * (1 + waste / 100), plaster = Math.max(0, gross * 2 - open * 2);
+  const slab = foot * slabT, footing = ((S.ext + S.int) / S.storeys) * fw * fd;
+  const cnt = a => a.reduce((s, o) => s + o.n, 0);
+  rows = [
+    ["Total floor area", "m²", floor, "Sum of room length × width"],
+    ["Ground floor footprint", "m²", foot, "Floor area ÷ storeys"],
+    ["Net wall area", "m²", net, "(External + internal wall length) × height, less openings"],
+    ["Sandcrete blocks", "no.", blocks, "Net wall area × 12.5, plus waste"],
+    ["Plastering, both faces", "m²", plaster, "Gross wall area × 2, less openings × 2"],
+    ["Paint", "litres", plaster * 2 / 10, "Plaster area × 2 coats ÷ 10 m² per litre"],
+    ["Floor finish (tiles or screed)", "m²", floor * 1.1, "Floor area plus 10% cutting waste"],
+    ["Ceiling", "m²", floor, "Equal to floor area"],
+    ["Foundation concrete", "m³", footing, "Wall length ÷ storeys × footing width × depth"],
+    ["Ground slab concrete", "m³", slab, "Footprint × slab thickness"],
+    ["Cement for slab (1:2:4)", "bags", slab * 6.4, "About 6.4 bags of 50 kg per m³"],
+    ["Reinforcement steel", "kg", (slab + footing) * num($("aRb").value), "Slab and foundation concrete × kg per m³"],
+    ["Roof covering", "m²", foot * rf, "Footprint × roof slope factor"],
+    ["Doors", "no.", cnt(S.doors), "From the door list"],
+    ["Windows", "no.", cnt(S.windows), "From the window list"]
+  ];
+  const P = {}; document.querySelectorAll("#prices input").forEach(i => P[i.dataset.item] = num(i.value));
+  let total = 0;
+  rows.forEach(r => { r[4] = P[r[0]] ? (r[1] === "no." ? Math.ceil(r[2]) : r[2]) * P[r[0]] : 0; total += r[4]; });
+  $("out").innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="qty">${r[1] === "no." ? Math.ceil(r[2]) : r[2].toFixed(1)}</td><td class="note">${r[3]}</td><td class="qty">${r[4] ? naira(r[4]) : ""}</td></tr>`).join("") + `<tr><td><strong>Total of priced items</strong></td><td></td><td></td><td></td><td class="qty">${total ? naira(total) : "Add prices above"}</td></tr>`;
+}
+
+/* ---------- CSV ---------- */
+$("csv").addEventListener("click", async () => {
+  const m = $("csvMsg"); m.className = "status"; m.textContent = "";
+  const csv = [["Item", "Unit", "Quantity", "Basis", "Cost (naira)"]].concat(rows.map(r => [r[0], r[1], r[1] === "no." ? Math.ceil(r[2]) : r[2].toFixed(1), r[3], r[4] ? Math.round(r[4]) : ""])).map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(",")).join("\n");
+  try {
+    const dl = typeof claude !== "undefined" ? await claude.use("downloads") : null;
+    if (dl) await dl.save({ filename: "plan-quantities.csv", data: csv });
+    else { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "plan-quantities.csv"; a.click(); URL.revokeObjectURL(a.href); }
+    m.className = "status ok"; m.textContent = "Saved.";
+  } catch (e) { m.className = "status err"; m.textContent = e && e.code === "declined" ? "Save cancelled." : "Could not save the file."; }
+});
+
+PRICES.forEach(([item, unit]) => {
+  const d = document.createElement("div"), l = document.createElement("label"), i = document.createElement("input");
+  l.textContent = item + " (" + unit + ")"; i.inputMode = "decimal"; i.dataset.item = item; i.id = "p_" + PRICES.findIndex(p => p[0] === item); l.htmlFor = i.id;
+  i.addEventListener("input", calc); d.append(l, i); $("prices").appendChild(d);
+});
+buildInputs(); calc();
+</script>
+</body>
+</html>

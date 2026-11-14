@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<!-- ============================================================
+     Page:    Academic Planner (planner.html)
+     Site:    Student Portfolio & Academic Planner
+     Author:  Engr Seun (TeemTECH), Miva Open University
+     Purpose: Task planner where the user can add tasks with a due
+              date, tick them off and delete them. The page holds
+              only the markup; js/planner.js supplies the behaviour.
+     ============================================================ -->
+<html lang="en"> <!-- lang helps screen readers and search engines -->
+
+<head>
+    <!-- Character encoding: must appear within the first 1024 bytes -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive layout: match the viewport to the device width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO: summary shown in search engine results -->
+    <meta name="description" content="Academic portfolio and student planner of Engr Seun (TeemTECH).">
+
+    <title>Academic Planner | Engr Seun</title>
+
+    <!-- Performance: open the connection to Google Fonts early -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- Web fonts: Archivo (headings) and IBM Plex Sans (body text) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500&display=swap">
+
+    <!-- Main site stylesheet (shared by all pages) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Accessibility: lets keyboard users bypass the navigation -->
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- ===================== SITE HEADER ===================== -->
+    <header class="site-header">
+
+        <!-- Brand / logo link back to the home page -->
+        <a class="brand" href="index.html">Engr Seun<span>TeemTECH</span></a>
+
+        <!-- Mobile menu toggle; js/main.js updates aria-expanded on click -->
+        <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+
+        <!-- Primary navigation (aria-label distinguishes it for screen readers) -->
+        <nav aria-label="Main navigation">
+            <ul id="nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <!-- Current page: "active" styles the link, aria-current announces it.
+                     Only the current page should carry aria-current="page". -->
+                <li><a href="planner.html" class="active" aria-current="page">Planner</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main id="main"> <!-- Target of the "Skip to content" link -->
+
+        <!-- "narrow" class constrains the line length for easier reading -->
+        <section class="narrow">
+            <h1>Academic planner</h1>
+
+            <!-- Lead paragraph: explains what the planner does -->
+            <p class="lead">Add what you need to do, tick it off when done, and delete what you no longer need.</p>
+
+            <!-- ---------- Add-task form ----------
+                 No action attribute: planner.js listens for the submit event
+                 on #taskForm and handles it in the browser without reloading. -->
+            <form id="taskForm" class="inline-form">
+                <!-- Each label's "for" matches its input's id, so clicking
+                     the label focuses the field and screen readers announce it -->
+                <label for="taskInput">New task</label>
+                <!-- autocomplete="off" stops the browser suggesting old entries -->
+                <input type="text" id="taskInput" placeholder="e.g. Finish statistics assignment" autocomplete="off">
+
+                <label for="dueInput">Due date</label>
+                <!-- type="date" gives a native date picker; the value is stored as YYYY-MM-DD -->
+                <input type="date" id="dueInput">
+
+                <!-- type="submit" triggers the form's submit event (also fires on Enter) -->
+                <button class="btn" type="submit">Add task</button>
+            </form>
+
+            <!-- Feedback area: planner.js writes validation messages here.
+                 role="alert" makes screen readers announce new text immediately. -->
+            <p id="taskMsg" class="msg" role="alert"></p>
+
+            <!-- Task summary (for example, how many tasks are done), filled in by planner.js -->
+            <p id="summary" class="summary"></p>
+
+            <!-- ---------- Task list ----------
+                 Intentionally empty: planner.js creates one <li> per task
+                 (text, due date, tick box and delete button) and inserts it here. -->
+            <ul id="taskList" class="tasks"></ul>
+        </section>
+    </main>
+
+
+    <!-- ===================== SITE FOOTER ===================== -->
+    <footer class="site-footer">
+        <!-- Year is updated dynamically by js/main.js (2026 is the fallback) -->
+        <p>&copy; <span id="year">2026</span> Engr Seun (TeemTECH). Miva Open University.</p>
+
+        <!-- TODO: replace YOUR-USERNAME/YOUR-REPO with your real GitHub repository path -->
+        <p><a href="https://github.com/YOUR-USERNAME/YOUR-REPO">GitHub repository</a></p>
+    </footer>
+
+    <!-- Site-wide JavaScript (mobile menu toggle, footer year) -->
+    <script src="js/main.js"></script>
+
+    <!-- Page-specific JavaScript: planner logic; loaded after main.js -->
+    <script src="js/planner.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SiteManager | Construction Management System</title>
+<style>
+:root{--bg:#f5f3ef;--card:#fff;--ink:#1c1b19;--mute:#6b675f;--line:#dedad2;--accent:#c2410c;--accent-ink:#fff;--ok:#15803d;--bad:#b91c1c;--bar:#e7e3da;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171614;--card:#222120;--ink:#f0ede6;--mute:#a09b90;--line:#38352f;--accent:#fb923c;--accent-ink:#1c1b19;--ok:#4ade80;--bad:#f87171;--bar:#33312c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171614;--card:#222120;--ink:#f0ede6;--mute:#a09b90;--line:#38352f;--accent:#fb923c;--accent-ink:#1c1b19;--ok:#4ade80;--bad:#f87171;--bar:#33312c;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 16px 0;max-width:1000px;margin:0 auto}
+h1{margin:0;font-size:1.35rem;letter-spacing:-.01em}
+h1 span{color:var(--accent)}
+.sub{color:var(--mute);margin:2px 0 12px;font-size:.9rem}
+nav{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line)}
+nav a{padding:10px 14px;color:var(--mute);text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;font-weight:600}
+nav a.on{color:var(--ink);border-color:var(--accent)}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat b{display:block;font-size:1.5rem;margin-top:2px}
+.stat small,.mute{color:var(--mute)}
+h2{font-size:1.05rem;margin:20px 0 10px}
+.row{margin-bottom:14px}
+.row .top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:600}
+.bar{height:8px;background:var(--bar);border-radius:99px;margin:6px 0 4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.bad{color:var(--bad)}.ok{color:var(--ok)}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;align-items:end;margin-bottom:16px}
+label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--mute);font-weight:600}
+input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-width:0}
+input:focus,select:focus,button:focus-visible,nav a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;font-weight:600;padding:9px 14px;border:0;border-radius:8px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+button.del{background:none;color:var(--bad);padding:4px 8px;border:1px solid var(--line)}
+.wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;min-width:560px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
+tr:last-child td{border-bottom:0}
+.msg{min-height:1.2em;color:var(--bad);margin:-6px 0 8px;font-size:.85rem}
+.empty{padding:24px;text-align:center;color:var(--mute)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Site<span>Manager</span></h1>
+  <p class="sub">Projects, tasks, materials and workforce in one place.</p>
+  <nav id="tabs" aria-label="Sections"></nav>
+</header>
+<main id="app"></main>
+
+<script>
+(function () {
+  var CUR = '₦';                       // currency symbol
+  var KEY = 'sitemanager-v1';
+  var uid = function () { return Math.random().toString(36).slice(2, 9); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var money = function (n) { return CUR + Number(n || 0).toLocaleString(); };
+
+  /* ---------- Data (saved in this browser only) ---------- */
+  function seed() {
+    return {
+      projects: [{ id: 'p1', name: 'Greenfield Duplex', site: 'Epe, Lagos', budget: 18000000, end: '2027-03-30' }],
+      tasks: [
+        { id: 't1', title: 'Excavate foundation', project: 'p1', assignee: 'Musa', due: '2026-11-05', status: 'Done' },
+        { id: 't2', title: 'Pour ground-floor slab', project: 'p1', assignee: 'Chidi', due: '2026-11-10', status: 'In progress' },
+        { id: 't3', title: 'Block work to lintel level', project: 'p1', assignee: 'Musa', due: '2026-11-28', status: 'To do' }
+      ],
+      materials: [
+        { id: 'm1', name: 'Cement (50kg bag)', project: 'p1', qty: 220, unit: 'bags', cost: 9500 },
+        { id: 'm2', name: 'Iron rod 16mm', project: 'p1', qty: 80, unit: 'pcs', cost: 14000 }
+      ],
+      workers: [
+        { id: 'w1', name: 'Musa Bello', trade: 'Mason', project: 'p1', rate: 12000 },
+        { id: 'w2', name: 'Chidi Okeke', trade: 'Carpenter', project: 'p1', rate: 13000 }
+      ]
+    };
+  }
+  var S;
+  try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { S = null; }
+  if (!S || !S.projects) S = seed();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable */ } }
+
+  /* ---------- Helpers ---------- */
+  var pname = function (id) { var p = S.projects.filter(function (x) { return x.id === id; })[0]; return p ? p.name : '—'; };
+  function spent(pid) { return S.materials.filter(function (m) { return m.project === pid; }).reduce(function (a, m) { return a + m.qty * m.cost; }, 0); }
+  function progress(pid) {
+    var t = S.tasks.filter(function (x) { return x.project === pid; });
+    return t.length ? Math.round(100 * t.filter(function (x) { return x.status === 'Done'; }).length / t.length) : 0;
+  }
+  var today = function () { return new Date().toISOString().slice(0, 10); };
+
+  /* ---------- Section definitions: form fields + table columns ---------- */
+  var STATUS = ['To do', 'In progress', 'Done'];
+  var DEF = {
+    projects: {
+      label: 'Projects', add: 'Add project',
+      fields: [['name', 'Project name', 'text'], ['site', 'Site location', 'text'], ['budget', 'Budget (' + CUR + ')', 'number'], ['end', 'Target completion', 'date']],
+      cols: [['Project', function (r) { return esc(r.name); }], ['Site', function (r) { return esc(r.site); }], ['Budget', function (r) { return money(r.budget); }], ['Target', function (r) { return esc(r.end || '—'); }], ['Progress', function (r) { return progress(r.id) + '%'; }]]
+    },
+    tasks: {
+      label: 'Tasks', add: 'Add task',
+      fields: [['title', 'Task', 'text'], ['project', 'Project', 'ref'], ['assignee', 'Assigned to', 'text'], ['due', 'Due date', 'date'], ['status', 'Status', 'select']],
+      cols: [['Task', function (r) { return esc(r.title); }], ['Project', function (r) { return esc(pname(r.project)); }], ['Assigned', function (r) { return esc(r.assignee || '—'); }],
+        ['Due', function (r) { var late = r.status !== 'Done' && r.due && r.due < today(); return '<span class="' + (late ? 'bad' : '') + '">' + esc(r.due || '—') + (late ? ' (overdue)' : '') + '</span>'; }],
+        ['Status', function (r) { return '<select data-st="' + r.id + '" aria-label="Status">' + STATUS.map(function (s) { return '<option' + (s === r.status ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select>'; }]]
+    },
+    materials: {
+      label: 'Materials', add: 'Add material',
+      fields: [['name', 'Material', 'text'], ['project', 'Project', 'ref'], ['qty', 'Quantity', 'number'], ['unit', 'Unit', 'text'], ['cost', 'Unit cost (' + CUR + ')', 'number']],
+      cols: [['Material', function (r) { return esc(r.name); }], ['Project', function (r) { return esc(pname(r.project)); }], ['Qty', function (r) { return r.qty + ' ' + esc(r.unit); }], ['Unit cost', function (r) { return money(r.cost); }], ['Total', function (r) { return money(r.qty * r.cost); }]]
+    },
+    workers: {
+      label: 'Workforce', add: 'Add worker',
+      fields: [['name', 'Name', 'text'], ['trade', 'Trade', 'text'], ['project', 'Project', 'ref'], ['rate', 'Daily rate (' + CUR + ')', 'number']],
+      cols: [['Name', function (r) { return esc(r.name); }], ['Trade', function (r) { return esc(r.trade); }], ['Project', function (r) { return esc(pname(r.project)); }], ['Daily rate', function (r) { return money(r.rate); }]]
+    }
+  };
+  var VIEWS = ['dashboard', 'projects', 'tasks', 'materials', 'workers'];
+
+  /* ---------- Rendering ---------- */
+  function dashboard() {
+    var budget = S.projects.reduce(function (a, p) { return a + Number(p.budget || 0); }, 0);
+    var sp = S.materials.reduce(function (a, m) { return a + m.qty * m.cost; }, 0);
+    var done = S.tasks.filter(function (t) { return t.status === 'Done'; }).length;
+    var pct = S.tasks.length ? Math.round(100 * done / S.tasks.length) : 0;
+    var late = S.tasks.filter(function (t) { return t.status !== 'Done' && t.due && t.due < today(); });
+    var h = '<div class="grid">' +
+      stat('Active projects', S.projects.length, '') + stat('Total budget', money(budget), '') +
+      stat('Material spend', money(sp), budget ? Math.round(100 * sp / budget) + '% of budget' : '') +
+      stat('Tasks complete', pct + '%', done + ' of ' + S.tasks.length) + stat('Workers on site', S.workers.length, '') + '</div>';
+    h += '<h2>Project progress</h2>';
+    h += S.projects.length ? S.projects.map(function (p) {
+      var s = spent(p.id), over = p.budget && s > p.budget;
+      return '<div class="card row"><div class="top"><span>' + esc(p.name) + '</span><span>' + progress(p.id) + '% done</span></div>' +
+        '<div class="bar"><i style="width:' + progress(p.id) + '%"></i></div>' +
+        '<small class="mute">Materials ' + money(s) + ' of ' + money(p.budget) + ' budget</small> ' +
+        (over ? '<small class="bad"><b>Over budget</b></small>' : '') + '</div>';
+    }).join('') : '<div class="card empty">No projects yet. Add one under Projects.</div>';
+    h += '<h2>Overdue tasks</h2>';
+    h += late.length ? '<div class="card">' + late.map(function (t) { return '<div class="row" style="margin:0 0 8px"><b>' + esc(t.title) + '</b> <span class="mute">· ' + esc(pname(t.project)) + ' · due ' + esc(t.due) + '</span></div>'; }).join('') + '</div>' : '<div class="card empty ok">Nothing overdue.</div>';
+    return h;
+  }
+  function stat(label, val, note) { return '<div class="card stat"><small>' + label + '</small><b>' + val + '</b><small>' + note + '</small></div>'; }
+
+  function section(kind) {
+    var d = DEF[kind], needsProject = kind !== 'projects' && !S.projects.length;
+    var h = '';
+    if (needsProject) {
+      h += '<div class="card empty">Add a project first, then come back here.</div>';
+    } else {
+      h += '<form data-kind="' + kind + '" novalidate>' + d.fields.map(function (f) {
+        var inp;
+        if (f[2] === 'ref') inp = '<select name="' + f[0] + '">' + S.projects.map(function (p) { return '<option value="' + p.id + '">' + esc(p.name) + '</option>'; }).join('') + '</select>';
+        else if (f[2] === 'select') inp = '<select name="' + f[0] + '">' + STATUS.map(function (s) { return '<option>' + s + '</option>'; }).join('') + '</select>';
+        else inp = '<input name="' + f[0] + '" type="' + f[2] + '"' + (f[2] === 'number' ? ' min="0" step="any"' : '') + '>';
+        return '<label>' + f[1] + inp + '</label>';
+      }).join('') + '<button type="submit">' + d.add + '</button></form><p class="msg" role="alert" id="msg"></p>';
+    }
+    var rows = S[kind];
+    h += rows.length ? '<div class="wrap"><table><thead><tr>' + d.cols.map(function (c) { return '<th>' + c[0] + '</th>'; }).join('') + '<th></th></tr></thead><tbody>' +
+      rows.map(function (r) { return '<tr>' + d.cols.map(function (c) { return '<td>' + c[1](r) + '</td>'; }).join('') + '<td><button class="del" data-del="' + kind + ':' + r.id + '" aria-label="Delete">Delete</button></td></tr>'; }).join('') +
+      '</tbody></table></div>' : (needsProject ? '' : '<div class="card empty">Nothing here yet. Use the form above to add your first entry.</div>');
+    return h;
+  }
+
+  function render() {
+    var v = location.hash.slice(1);
+    if (VIEWS.indexOf(v) < 0) v = 'dashboard';
+    document.getElementById('tabs').innerHTML = VIEWS.map(function (n) {
+      return '<a href="#' + n + '"' + (n === v ? ' class="on" aria-current="page"' : '') + '>' + (n === 'dashboard' ? 'Dashboard' : DEF[n].label) + '</a>';
+    }).join('');
+    document.getElementById('app').innerHTML = v === 'dashboard' ? dashboard() : section(v);
+  }
+
+  /* ---------- Events (delegated, so they survive re-rendering) ---------- */
+  document.addEventListener('submit', function (e) {
+    var f = e.target; if (!f.dataset.kind) return;
+    e.preventDefault();
+    var kind = f.dataset.kind, d = DEF[kind], rec = { id: uid() }, msg = document.getElementById('msg');
+    d.fields.forEach(function (x) { var v = f.elements[x[0]].value.trim(); rec[x[0]] = x[2] === 'number' ? Number(v || 0) : v; });
+    if (!rec[d.fields[0][0]]) { msg.textContent = 'Please fill in the ' + d.fields[0][1].toLowerCase() + '.'; return; }
+    S[kind].push(rec); save(); render();
+  });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-del]'); if (!b) return;
+    var p = b.dataset.del.split(':');
+    if (!confirm('Delete this entry?')) return;
+    S[p[0]] = S[p[0]].filter(function (r) { return r.id !== p[1]; });
+    if (p[0] === 'projects') ['tasks', 'materials', 'workers'].forEach(function (k) { S[k] = S[k].filter(function (r) { return r.project !== p[1]; }); });
+    save(); render();
+  });
+  document.addEventListener('change', function (e) {
+    var id = e.target.dataset.st; if (!id) return;
+    S.tasks.forEach(function (t) { if (t.id === id) t.status = e.target.value; });
+    save(); render();
+  });
+  window.addEventListener('hashchange', render);
+  render();
+})();
+</script>
+</body>
+</html>

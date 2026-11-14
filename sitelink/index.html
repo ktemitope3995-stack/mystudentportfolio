@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SiteLink connects you with verified construction workers and tracks each job from booking to review.">
+<title>Home | SiteLink</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="index.html">SiteLink</a>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+  <nav aria-label="Main navigation"><ul id="nav"><li><a href="index.html" class="active" aria-current="page">Home</a></li><li><a href="workers.html">Find workers</a></li><li><a href="hire.html">Post a job</a></li><li><a href="jobs.html">My jobs</a></li><li><a href="reviews.html">Reviews</a></li></ul></nav>
+</header>
+<main id="main">
+
+<section class="hero">
+  <div>
+    <h1>Hire construction workers you can trust.</h1>
+    <p class="lead">Find verified carpenters, electricians, masons, plumbers and more. SiteLink records who turned up, what was done, and how well it was done.</p>
+    <p class="actions"><a class="btn" href="workers.html">Find a worker</a><a class="btn ghost" href="hire.html">Post a job</a></p>
+  </div>
+  <aside class="ticket" aria-label="Example job ticket">
+    <header><strong>Job ticket: Rewire two rooms</strong><span class="tag">In progress</span></header>
+    <p class="meta">Electrician &middot; Checked in 8:02 am, on time</p>
+    <ul class="mini">
+      <li class="done">Mark socket positions</li>
+      <li class="done">Run conduit and cables</li>
+      <li>Fit sockets and switches</li>
+      <li>Test every circuit</li>
+    </ul>
+    <div class="bar"><span style="width:50%"></span></div>
+    <p class="meta">2 of 4 tasks done. Payment is released after the client approves.</p>
+  </aside>
+</section>
+<section class="band">
+  <h2>How a job works</h2>
+  <ol class="steps">
+    <li><h3>Hire</h3><p>Search verified workers by trade, area and rating, then post your job.</p></li>
+    <li><h3>Attend</h3><p>The worker checks in and out. Late arrivals are recorded.</p></li>
+    <li><h3>Work</h3><p>A checklist built from your job post shows progress task by task.</p></li>
+    <li><h3>Verify</h3><p>You approve the work or ask for a fix before the job closes.</p></li>
+    <li><h3>Review</h3><p>Both sides leave feedback, and it updates the worker's reliability score.</p></li>
+  </ol>
+</section>
+<section class="band alt">
+  <h2>Trades on SiteLink</h2>
+  <ul class="chips" id="tradeList"></ul>
+</section>
+</main>
+<footer class="site-footer"><p>SiteLink: a web design project, Miva Open University.</p><p>Demo data is stored in your browser only.</p></footer>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>renderTradeChips();</script>
+</body>
+</html>
